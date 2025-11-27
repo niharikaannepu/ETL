@@ -7,16 +7,7 @@ carts_data=cart_resp.json()
 cart_csv_data=[]
 cart_json_data=[]
 
-# print(users["carts"][0]["id"])
-# print(users["carts"][0]["products"])
-# # print(len(users["carts"][0]["products"]))
 
-
-# print(users["carts"][0]["total"])
-# print(users["carts"][0]["discountedTotal"])
-# print(users["carts"][0]["userId"])
-# print(users["carts"][0]["totalProducts"])
-# print(users["carts"][0]["totalQuantity"])
 
 for cart in carts_data["carts"]:
     #print(cart["id"])
@@ -35,7 +26,7 @@ fp1.close()
 
 for cart in carts_data["carts"]:
     cart_csv_data.append((cart["id"],
-                          cart["products"],
+                          json.dumps(cart["products"]),
                           cart["total"],
                           cart["discountedTotal"],
                           cart["totalProducts"],
@@ -60,3 +51,38 @@ try:
     print("user_col")
 except:
     print("Error")
+    
+    
+    
+dbcon=None
+cursor=None
+try:
+    dbcon=mysql.connector.connect(host="localhost",
+                                  user="root",
+                                  password="root",
+                                  database="dbcart"
+                                  ) 
+    
+    cursor=dbcon.cursor()
+    sql_st='''
+            CREATE TABLE if not exists cart (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            products JSON,
+            total FLOAT,
+            discountedTotal FLOAT,
+            totalProducts FLOAT,
+            totalQuantity FLOAT);
+            '''
+    sql_st1='''
+            insert into cart(id,products,total,discountedTotal,totalProducts,totalQuantity) values(%s,%s,%s,%s,%s,%s);
+            '''
+            
+        
+    cursor.executemany(sql_st1,cart_csv_data) 
+    dbcon.commit()
+    print('New Mysql Table created Successfuly')
+except mysql.connector.Error as err:
+    print(err)
+
+    
+    
