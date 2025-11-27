@@ -60,12 +60,12 @@ try:
     dbcon=mysql.connector.connect(host="localhost",
                                   user="root",
                                   password="root",
-                                  database="dbcart"
+                                  database="dbcarts"
                                   ) 
     
     cursor=dbcon.cursor()
     sql_st='''
-            CREATE TABLE if not exists cart (
+            CREATE TABLE if not exists carts (
             id INT,
             products JSON,
             total FLOAT,
@@ -74,7 +74,7 @@ try:
             totalQuantity FLOAT);
             '''
     sql_st1='''
-            insert into cart(id,products,total,discountedTotal,totalProducts,totalQuantity) values(%s,%s,%s,%s,%s,%s);
+            insert into carts(id,products,total,discountedTotal,totalProducts,totalQuantity) values(%s,%s,%s,%s,%s,%s);
             '''
             
         
